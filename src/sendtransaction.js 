@@ -1,0 +1,9 @@
+var me = '0x1434aC733F14cf153Ec7D11ac01393A4E2f3E23b';
+var sender = me;
+var receiver = '0xc304b48cC18036942bc0d14Ce0408d208db8a0C5';
+var amount = 5 * 10**14; // We are sending 5 * 10**14 "wei" ETH. check the conversion rations: https://eth-converter.com/
+let message = "0x68656c6c6f" // "hello" in Hexadecimal
+var gas = 21100;
+var params = { from: me, to: receiver, value: '0x' + amount.toString(16), gas: '0x' + gas.toString(16) };
+
+var txHash = await ethereum.request({ method: 'eth_sendTransaction', params: [params] });

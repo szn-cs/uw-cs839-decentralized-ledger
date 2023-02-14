@@ -1,23 +1,23 @@
 {
 	"workbench.colorCustomizations": {
-		"activityBar.activeBackground": "#127eed",
-		"activityBar.background": "#127eed",
-		"activityBar.foreground": "#e7e7e7",
-		"activityBar.inactiveForeground": "#e7e7e799",
-		"activityBarBadge.background": "#940b4f",
-		"activityBarBadge.foreground": "#e7e7e7",
-		"commandCenter.border": "#e7e7e799",
-		"sash.hoverBorder": "#127eed",
-		"statusBar.background": "#127eed",
-		"statusBar.foreground": "#e7e7e7",
-		"statusBarItem.hoverBackground": "#4198f1",
-		"statusBarItem.remoteBackground": "#127eed",
-		"statusBarItem.remoteForeground": "#e7e7e7",
-		"titleBar.activeBackground": "#127eed",
-		"titleBar.activeForeground": "#e7e7e7",
-		"titleBar.inactiveBackground": "#127eed99",
-		"titleBar.inactiveForeground": "#e7e7e799"
-	},
+    "activityBar.activeBackground": "#127eed",
+    "activityBar.background": "#127eed",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#940b4f",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#127eed",
+    "statusBar.background": "#127eed",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#4198f1",
+    "statusBarItem.remoteBackground": "#127eed",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#127eed",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#127eed99",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
 	"editor.tokenColorCustomizations": {
 		"[Tomorrow Night Bright Operator Mono]": {
 			"textMateRules": [
