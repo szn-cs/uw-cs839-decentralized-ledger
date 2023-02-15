@@ -14,26 +14,30 @@ PHASE_END: constant(int32) = 2
 # Each player has a 5-by-5 board
 # The field track where the player's boats are located and what fields were hit
 # Player should not be allowed to shoot the same field twice, even if it is empty
-FIELD_EMPTY: constant(int32) = 0
-FIELD_BOAT: constant(int32) = 1
-FIELD_HIT: constant(int32) = 2
+FIELD_EMPTY: constant(uint32) = 0
+FIELD_BOAT: constant(uint32) = 1
+FIELD_HIT: constant(uint32) = 2
 
 players: immutable(address[2])
 
 # Which player has the next turn? Only used during the SHOOT phase
-next_player: int32 = -1
+next_player: int32
 
 # Which phase of the game is it?
 phase: int32
 
-matrix: int32[2][BOARD_SIZE][BOARD_SIZE] = empty(int32[2][BOARD_SIZE][BOARD_SIZE])
-counter: int32[2] = empty(int32[2])
+matrix: uint32[2][BOARD_SIZE][BOARD_SIZE]
+counter: uint32[2]
 
 @external
 def __init__(player1: address, player2: address):
     players = [player1, player2]
     self.next_player = 0
     self.phase = PHASE_SET
+
+    self.next_player = -1
+    self.matrix = empty(uint32[2][BOARD_SIZE][BOARD_SIZE])
+    self.counter = empty(uint32[2])
 
 
 @external
@@ -50,18 +54,19 @@ def set_field(pos_x: uint32, pos_y: uint32):
     if pos_x >= BOARD_SIZE or pos_y >= BOARD_SIZE:
         raise "Position out of bounds"
 
-    player: uint32
-    if players[0] == msg.sender
+    player: int32 = -1
+
+    if players[0] == msg.sender :
       player = 0
-    else if players[1] == msg.sender 
+    elif players[1] == msg.sender :
       player = 1
-    else 
+    else :
       raise "Unknown player"
 
-    if(self.counter[player] >= NUM_PIECES))
+    if self.counter[player] >= NUM_PIECES :
       raise "too many requests"
 
-    if(self.matrix[player][pos_x][pos_y] != FIELD_EMPTY)
+    if self.matrix[player][pos_x][pos_y] != FIELD_EMPTY :
       raise "duplicate entry"
     
     self.matrix[player][pos_x][pos_y] = FIELD_BOAT
@@ -82,34 +87,34 @@ def shoot(pos_x: uint32, pos_y: uint32):
         raise "Wrong phase"
 
     # Add shooting logic and victory logic here
-    player: uint32
-    adversary: uint32
-    if players[0] == msg.sender
+    player: int32 = -1
+    adversary: int32 = -1
+    if players[0] == msg.sender :
       player = 0
       adversary = 1
-    else if players[1] == msg.sender 
+    elif players[1] == msg.sender :
       player = 1
       adversary = 0
-    else 
+    else :
       raise "Unknown player"
 
-    if(next_player == -1)
+    if self.next_player == -1 :
       self.next_player = player
-    else if (self.next_player != player)
+    elif (self.next_player != player) :
       raise "wrong turn"
 
-    if(self.counter[player] <= 0 || self.counter[player] <= 0)
+    if self.counter[player] <= 0 or self.counter[player] <= 0 :
       raise "don't be sily"
 
-    if(self.matrix[adversary][pos_x][pos_y] == FIELD_HIT)
+    if self.matrix[adversary][pos_x][pos_y] == FIELD_HIT :
       raise "dupicate attempt"
 
-    if(self.matrix[adversary][pos_x][pos_y] == FIELD_BOAT)
+    if self.matrix[adversary][pos_x][pos_y] == FIELD_BOAT :
       self.counter[player] -= 1
 
     self.matrix[adversary][pos_x][pos_y] = FIELD_HIT
     
-    if(self.counter[player] <= 0)
+    if self.counter[player] <= 0 :
       self.phase = PHASE_END
 
 
@@ -125,10 +130,10 @@ def get_winner() -> address:
     player1: uint32 = 0
     player2: uint32 = 1
 
-    if(self.counter[player1] <= 0) 
+    if self.counter[player1] <= 0 :
       return players[player1]
     
-    else if(self.counter[player2] <= 0)
+    elif self.counter[player2] <= 0 :
       return players[player2]
 
     # Raise an error if no one won yet
