@@ -55,22 +55,30 @@ def set_field(pos_x: uint32, pos_y: uint32):
         raise "Position out of bounds"
 
     player: int32 = -1
+    adversary: int32 = -1
 
     if players[0] == msg.sender :
       player = 0
+      adversary = 1
     elif players[1] == msg.sender :
       player = 1
+      adversary = 0
     else :
       raise "Unknown player"
 
     if self.counter[player] >= NUM_PIECES :
       raise "too many requests"
 
-    if self.matrix[player][pos_x][pos_y] != FIELD_EMPTY :
+    if self.matrix[pos_y][pos_x][player] != FIELD_EMPTY :
       raise "duplicate entry"
     
-    self.matrix[player][pos_x][pos_y] = FIELD_BOAT
+    self.matrix[pos_y][pos_x][player] = FIELD_BOAT
     self.counter[player] += 1
+    
+    if self.counter[player] >= NUM_PIECES and self.counter[adversary] >= NUM_PIECES :
+      self.phase = PHASE_SHOOT
+      
+    
     
 
 @external
@@ -99,23 +107,26 @@ def shoot(pos_x: uint32, pos_y: uint32):
       raise "Unknown player"
 
     if self.next_player == -1 :
-      self.next_player = player
-    elif (self.next_player != player) :
+      self.next_player = 0
+
+    if (self.next_player != player) :
       raise "wrong turn"
 
     if self.counter[player] <= 0 or self.counter[player] <= 0 :
       raise "don't be sily"
 
-    if self.matrix[adversary][pos_x][pos_y] == FIELD_HIT :
+    if self.matrix[pos_y][pos_x][adversary] == FIELD_HIT :
       raise "dupicate attempt"
 
-    if self.matrix[adversary][pos_x][pos_y] == FIELD_BOAT :
+    if self.matrix[pos_y][pos_x][adversary]  == FIELD_BOAT :
       self.counter[player] -= 1
 
-    self.matrix[adversary][pos_x][pos_y] = FIELD_HIT
+    self.matrix[pos_y][pos_x][adversary]  = FIELD_HIT
     
     if self.counter[player] <= 0 :
       self.phase = PHASE_END
+
+    self.next_player = adversary
 
 
 @external
