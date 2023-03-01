@@ -1,0 +1,3 @@
+- Vyper <https://docs.vyperlang.org/en/stable/index.html>
+- Ethereum token standard ERC-20 <https://eips.ethereum.org/EIPS/eip-20>
+- 
