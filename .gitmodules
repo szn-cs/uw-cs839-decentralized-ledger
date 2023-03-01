@@ -1,0 +1,6 @@
+[submodule "dependency/vyper"]
+	path = dependency/vyper
+	url = https://github.com/vyperlang/vyper
+[submodule "dependency/miniprojects"]
+	path = dependency/miniprojects
+	url = https://github.com/kaimast/btech-miniprojects
