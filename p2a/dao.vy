@@ -1,6 +1,15 @@
 from vyper.interfaces import ERC20
 
-implements: ERC20
+implements: ERC20 # interface: approve, transfer, transferFrom
+# function totalSupply() public view returns (uint256)
+# function balanceOf(address _owner) public view returns (uint256 balance)
+# function transfer(address _to, uint256 _value) public returns (bool success)
+# function transferFrom(address _from, address _to, uint256 _value) public returns (bool success)
+# function approve(address _spender, uint256 _value) public returns (bool success)
+# function allowance(address _owner, address _spender) public view returns (uint256 remaining)
+  
+
+
 
 event Transfer:
     sender: indexed(address)
@@ -17,6 +26,8 @@ allowance: public(HashMap[address, HashMap[address, uint256]])
 totalSupply: public(uint256)
 
 # TODO add state that tracks proposals here
+
+
 
 @external
 def __init__():
@@ -65,3 +76,5 @@ def approveProposal(_uid: uint256):
     # Similarly, if the caller already voted the call should fail.
 
     pass
+
+
