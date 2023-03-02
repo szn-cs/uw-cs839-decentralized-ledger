@@ -16,28 +16,42 @@ balanceOf: public(HashMap[address, uint256])
 allowance: public(HashMap[address, HashMap[address, uint256]])
 totalSupply: public(uint256)
 
-# TODO add state that tracks proposals here
+minter: address
+stakeholders: uint32 
 
+struct Proposal: 
+    recipient: address 
+    valid: bool
+    amount: uint256
+    approvals: uint32
+
+proposals: HashMap[uint256, Proposal]
+votes: HashMap [uint256, HashMap[address, bool]]
 
 @external
 def __init__():
     self.totalSupply = 0
-
+    self.minter = msg.sender
+    self.stakeholders = 0
 
 # Shareholding: convert Ether into the token 
 @external
 @payable
 @nonreentrant("lock")
 def buyToken():
-    # TODO implement
-    pass
+    self.totalSupply += msg.value
+    self.balanceOf[msg.sender] += msg.value
+    self.stakeholders += 1 
 
 # convert token into Ether 
 @external
 @nonpayable
 @nonreentrant("lock")
 def sellToken(_value: uint256):
-    # TODO implement
+    self.totalSupply -= _value
+    self.balanceOf[msg.sender] -= _value
+    if(self.balanceOf[msg.sender] <= 0) :
+      self.stakeholders -= 1
     pass
 
 @external
@@ -95,19 +109,38 @@ def approve(_spender : address, _value : uint256) -> bool:
 def createProposal(_uid: uint256, _recipient: address, _amount: uint256):
     # _uid: pick a random number
     # if _uid inuse or _amount == 0
+    assert _amount != 0
+    assert self.proposals[_uid].amount <= 0
 
-    # TODO implement
+    self.proposals[_uid] = Proposal({ recipient: _recipient, valid: True, amount: _amount, approvals: 0})
+
     pass
 
+
 # stakeholders need to approve proposal. 
-# Successful proporal: Yes votes must represent majority.
+# Successful proposal: Yes votes must represent majority.
 @external
 @nonpayable
 @nonreentrant("lock")
 def approveProposal(_uid: uint256):
+    assert self.proposals[_uid].valid
+
     # if is stakeholders account.
     # If the entity calling the function is not a stakeholder, the transaction should be reverted.
+    assert self.balanceOf[msg.sender] > 0  
+    
     # Similarly, if the caller already voted the call should fail.
+    assert not self.votes[_uid][msg.sender] 
+    
+    self.proposals[_uid].approvals += 1
+    self.votes[_uid][msg.sender] = True
+
+    if self.proposals[_uid].approvals > (self.stakeholders /2)  :
+      self.totalSupply -= self.proposals[_uid].amount
+      self.balanceOf[self.proposals[_uid].recipient] += self.proposals[_uid].amount
+      self.proposals[_uid].valid = False
+
+    
 
     pass
 

@@ -3,6 +3,7 @@
 import pytest
 from eth_tester.exceptions import TransactionFailed
 
+
 @pytest.fixture
 def dao_contract(w3, get_vyper_contract):
     with open("dao.vy", encoding='utf-8') as infile:
@@ -10,8 +11,10 @@ def dao_contract(w3, get_vyper_contract):
 
     return get_vyper_contract(contract_code)
 
+
 def test_nothing(dao_contract):
     pass
+
 
 def test_buy_token(w3, dao_contract):
     account = w3.eth.accounts[7]
@@ -20,6 +23,7 @@ def test_buy_token(w3, dao_contract):
     dao_contract.buyToken(transact={"from": account, "value": 1337})
     assert dao_contract.balanceOf(account) == 1337
     assert dao_contract.totalSupply() == 1337
+
 
 def test_sell_token(w3, dao_contract):
     account = w3.eth.accounts[7]
@@ -42,7 +46,8 @@ def test_approve_with_single_voter(w3, dao_contract):
     assert w3.eth.getBalance(recipient) == initial_balance
 
     dao_contract.approveProposal(1, transact={"from": account0})
-    assert w3.eth.getBalance(recipient) == initial_balance+52
+    assert w3.eth.getBalance(recipient) == initial_balance + 52
+
 
 def test_approve_with_transfer(w3, dao_contract):
     account0 = w3.eth.accounts[7]
@@ -62,7 +67,8 @@ def test_approve_with_transfer(w3, dao_contract):
     assert w3.eth.getBalance(recipient) == initial_balance
 
     dao_contract.approveProposal(1, transact={"from": account1})
-    assert w3.eth.getBalance(recipient) == initial_balance+52
+    assert w3.eth.getBalance(recipient) == initial_balance + 52
+
 
 def test_approve_unauthorized(w3, dao_contract):
     account0 = w3.eth.accounts[7]
@@ -73,6 +79,7 @@ def test_approve_unauthorized(w3, dao_contract):
     # Should not be allowed
     with pytest.raises(TransactionFailed):
         dao_contract.approveProposal(1, transact={"from": account0})
+
 
 def test_approve_with_three_voters(w3, dao_contract):
     account0 = w3.eth.accounts[7]
@@ -96,10 +103,11 @@ def test_approve_with_three_voters(w3, dao_contract):
 
     dao_contract.approveProposal(1, transact={"from": account1})
     assert w3.eth.getBalance(recipient) == initial_balance + 52
-  
+
     # Additional votes will not transfer more money
     dao_contract.approveProposal(1, transact={"from": account2})
-    assert w3.eth.getBalance(recipient) == initial_balance+52
+    assert w3.eth.getBalance(recipient) == initial_balance + 52
+
 
 def test_multiple_proposals(w3, dao_contract):
     account0 = w3.eth.accounts[7]
@@ -117,11 +125,12 @@ def test_multiple_proposals(w3, dao_contract):
 
     dao_contract.approveProposal(37, transact={"from": account0})
     assert w3.eth.getBalance(recipient1) == initial_balance1
-    assert w3.eth.getBalance(recipient2) == initial_balance2+14
+    assert w3.eth.getBalance(recipient2) == initial_balance2 + 14
 
     dao_contract.approveProposal(42, transact={"from": account0})
-    assert w3.eth.getBalance(recipient1) == initial_balance1+11
-    assert w3.eth.getBalance(recipient2) == initial_balance2+14
+    assert w3.eth.getBalance(recipient1) == initial_balance1 + 11
+    assert w3.eth.getBalance(recipient2) == initial_balance2 + 14
+
 
 def test_buy_tokens_multiple_times(w3, dao_contract):
     account0 = w3.eth.accounts[7]
@@ -141,6 +150,7 @@ def test_buy_tokens_multiple_times(w3, dao_contract):
 
     dao_contract.approveProposal(1, transact={"from": account0})
     assert w3.eth.getBalance(recipient) == initial_balance + 52
+
 
 def test_cannot_approve_twice(w3, dao_contract):
     account0 = w3.eth.accounts[7]
