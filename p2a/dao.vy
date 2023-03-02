@@ -113,7 +113,7 @@ def createProposal(_uid: uint256, _recipient: address, _amount: uint256):
     assert self.proposals[_uid].amount <= 0
 
     self.proposals[_uid] = Proposal({ recipient: _recipient, valid: True, amount: _amount, approvals: 0})
-
+  
     pass
 
 
