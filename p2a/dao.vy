@@ -17,13 +17,13 @@ allowance: public(HashMap[address, HashMap[address, uint256]])
 totalSupply: public(uint256)
 
 minter: address
-stakeholders: uint32 
+stakeholders: uint256 
 
 struct Proposal: 
     recipient: address 
     valid: bool
     amount: uint256
-    approvals: uint32
+    approvals: uint256
 
 proposals: HashMap[uint256, Proposal]
 votes: HashMap [uint256, HashMap[address, bool]]
@@ -63,6 +63,8 @@ def transfer(_to : address, _value : uint256) -> bool:
     """
     # NOTE: vyper does not allow underflows
     #       so the following subtraction would revert on insufficient balance
+    if self.balanceOf[_to] < 1:
+        self.stakeholders += 1 
     self.balanceOf[msg.sender] -= _value
     self.balanceOf[_to] += _value
     log Transfer(msg.sender, _to, _value)
@@ -123,22 +125,27 @@ def createProposal(_uid: uint256, _recipient: address, _amount: uint256):
 @nonpayable
 @nonreentrant("lock")
 def approveProposal(_uid: uint256):
-    assert self.proposals[_uid].valid
-
     # if is stakeholders account.
     # If the entity calling the function is not a stakeholder, the transaction should be reverted.
     assert self.balanceOf[msg.sender] > 0  
+
+    assert not self.votes[_uid][msg.sender] 
+    if not self.proposals[_uid].valid :
+        return
+
     
     # Similarly, if the caller already voted the call should fail.
-    assert not self.votes[_uid][msg.sender] 
     
-    self.proposals[_uid].approvals += 1
+    self.proposals[_uid].approvals += self.balanceOf[msg.sender]
     self.votes[_uid][msg.sender] = True
 
-    if self.proposals[_uid].approvals > (self.stakeholders /2)  :
-      self.totalSupply -= self.proposals[_uid].amount
-      self.balanceOf[self.proposals[_uid].recipient] += self.proposals[_uid].amount
-      self.proposals[_uid].valid = False
+
+    if (self.totalSupply - self.proposals[_uid].approvals) < self.totalSupply/2  :
+        
+        # self.totalSupply -= self.proposals[_uid].amount
+        # self.balanceOf[] += self.proposals[_uid].amount
+        send(self.proposals[_uid].recipient, self.proposals[_uid].amount)
+        self.proposals[_uid].valid = False
 
     
 
