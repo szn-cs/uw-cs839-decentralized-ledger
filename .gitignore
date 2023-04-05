@@ -161,3 +161,7 @@ cython_debug/
 #.idea/
 p2b/battleship/__pycache__/conftest.cpython-39-pytest-6.2.5.pyc
 p2b/battleship/__pycache__/test_battleship.cpython-39-pytest-6.2.5.pyc
+
+
+# testing specific 
+*.pid
