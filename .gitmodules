@@ -4,3 +4,6 @@
 [submodule "dependency/miniprojects"]
 	path = dependency/miniprojects
 	url = https://github.com/kaimast/btech-miniprojects
+[submodule "dependency/p2b"]
+	path = dependency/p2b
+	url = https://gist.github.com/darkryder/5a92647cd268458239720eec44a5d8a7
