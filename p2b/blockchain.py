@@ -113,6 +113,7 @@ class State(object):
         # apply the block to the state.
         if (block.number == 1):
             self.account['A'] = 10000
+            self.historyList['A'] = [(block.number, self.account['A'])]
 
         logging.info("Block (#%s) applied to state. %d transactions applied" % (block.hash, len(block.transactions)))
         accountInvolved = set()
@@ -133,12 +134,14 @@ class State(object):
     def history(self, account):
         # return a list of (blockNumber, value changes) that this account went through
         list = []  # [[blocknumber, amount],...]
-        if not account in self.historyList:
-            return list
 
-        print(self.historyList[account])
+        if not account in self.historyList:
+            self.historyList[account] = []
+
         for h in self.historyList[account]:
             list.append([h[0], h[1]])
+
+        print(self.historyList)
 
         return list
 
