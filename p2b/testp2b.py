@@ -219,6 +219,7 @@ class Test1ChainTests(unittest.TestCase):
         stagger()
 
         dumps = [n.dump() for n in self.nodes]
+        log(dumps)
         TestsUtils.checkStateEqualForAll(self, *[d['state'] for d in dumps])
         TestsUtils.checkChainEqualForAll(self, *[d['chain'] for d in dumps])
         one = dumps[0]
@@ -297,6 +298,7 @@ class Test2TxnStateSimple(unittest.TestCase):
         commit()
         self.nodes[1].send_txn(TestsUtils.txn('A', 'B', 5000))
         oneDump = self.nodes[1].dump()
+        log(oneDump)
         self.assertTrue(oneDump['pending_transactions'] == [TestsUtils.txn('A', 'B', 5000)])
         TestsUtils.checkBlockBasic(self, oneDump['chain'][0], 1, self.nodes[0], last_hash)
         last_hash = oneDump['chain'][-1]['hash']

@@ -8,7 +8,10 @@ app = Flask(__name__)
 # Instantiate the Blockchain
 blockchain = bc.Blockchain()
 
+
 @app.route('/inform/block', methods=['POST'])
+# Observe that it makes a call to is_new_block_valid before accepting it.
+# What all should a node do when it gets a block?
 def new_block_received():
     values = request.get_json()
     logging.info("Received: " + str(values))
@@ -28,8 +31,19 @@ def new_block_received():
 
     blockchain.chain.append(block)    # Add the block to the chain
     # Modify any other in-memory data structures to reflect the new block
+    blockchain.state.apply_block(block)
 
-    # TODO: if I am responsible for next block, start mining it (trigger_new_block_mine).
+    # if I am responsible for next block, start mining it (trigger_new_block_mine).
+    # make nodes propose blocks in Round Roubin  fashion
+    nodesNumber = len(blockchain.nodes)
+    lastCommitedBlock = blockchain.chain[len(blockchain.chain) - 1]
+    previousMiner = lastCommitedBlock.miner
+    previousMinerNodeIndex = blockchain.nodes.index(previousMiner)
+    nextMinerIndex = (previousMinerNodeIndex + 1) % nodesNumber
+    nextMinerIdentifier = blockchain.nodes[nextMinerIndex]
+
+    if (blockchain.node_identifier == nextMinerIdentifier):
+        blockchain.trigger_new_block_mine()  # mine the block
 
     return "OK", 201
 
@@ -57,15 +71,18 @@ def full_chain():
     }
     return jsonify(response), 200
 
+
 @app.route('/startexp/', methods=['GET'])
 def startexp():
     if blockchain.node_identifier == min(blockchain.nodes):
         blockchain.trigger_new_block_mine(genesis=True)
     return 'OK'
 
+
 @app.route('/health', methods=['GET'])
 def health():
     return 'OK', 200
+
 
 @app.route('/history', methods=['GET'])
 def history():
@@ -74,6 +91,7 @@ def history():
         return 'Missing values', 400
     data = blockchain.state.history(account)
     return jsonify(data), 200
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -87,7 +105,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Use port as node identifier.
-    port = args.port    
+    port = args.port
     blockchain.node_identifier = port
     blockchain.block_mine_time = args.blocktime
 

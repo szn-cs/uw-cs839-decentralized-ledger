@@ -25,8 +25,21 @@ function submit() {
   # Copy your blockchain.py and server.py files to /p/course/cs639-kaimast/handin/p2b/*.py
 }
 
-function test() {
+function testAll() {
   python3 testp2b.py -v
+  python3 testp2b.py -v Test1ChainTests
+  python3 testp2b.py -v Test2TxnStateSimple
   python3 testp2b.py -v Tests3UpdateableState
+  python3 testp2b.py -v Tests4SemanticValidations
+  python3 testp2b.py -v Tests5History
+
+  # run specific test
   python3 testp2b.py -v Tests3UpdateableState.test_e_check_transitive_validity_changes
+}
+
+# Propose a couple of transactions to different nodes.
+# See if these transactions end up being included in proposed blocks.
+# You can check it by dumping the state (as discussed above, and below in how-to-debug). Or just print stuff to the log.
+function test_2() {
+
 }
