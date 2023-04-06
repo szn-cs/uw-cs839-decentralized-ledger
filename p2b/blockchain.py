@@ -132,11 +132,15 @@ class State(object):
 
     def history(self, account):
         # return a list of (blockNumber, value changes) that this account went through
-        list = []  # [(blocknumber, amount),...]
+        list = []  # [[blocknumber, amount],...]
         if not account in self.historyList:
             return list
-        list.extend(self.historyList[account])
-        return self.historyList[account]
+
+        print(self.historyList[account])
+        for h in self.historyList[account]:
+            list.append([h[0], h[1]])
+
+        return list
 
 
 class Blockchain(object):
@@ -160,6 +164,12 @@ class Blockchain(object):
         genesisBlock = Block(1, [], '0xfeedcafe', block.miner)
         if (block.previous_hash == genesisBlock.hash and block.number == 1 or len(self.chain) == 0):
             genesis = True
+
+        if (genesis):
+            if (block.miner != self.nodes[0]):
+                return False
+            if (block.number != 1):
+                return False
 
         prevHash = '0xfeedcafe'
         prevNumber = 0

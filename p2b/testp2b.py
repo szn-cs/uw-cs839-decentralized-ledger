@@ -692,6 +692,7 @@ class Tests5History(unittest.TestCase):
         stagger()
         commit()
 
+        log(self.nodes[0].history('A'))
         self.assertTrue(self.nodes[0].history('A') == [[1, 10000]])
         global POINTS
         POINTS += 1
