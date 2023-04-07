@@ -754,6 +754,7 @@ class Tests5History(unittest.TestCase):
         self.assertTrue(all(h == historiesB[0] for h in historiesB))
         self.assertTrue(all(h == historiesC[0] for h in historiesC))
 
+        print(historiesA[0])
         self.assertTrue(historiesA[0] == [[1, 10000], [2, -500], [3, -1400]])
         self.assertTrue(historiesB[0] == [[2, 500], [3, 1300]])
         self.assertTrue(historiesC[0] == [[3, 100]])

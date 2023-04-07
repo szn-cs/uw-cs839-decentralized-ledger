@@ -116,32 +116,47 @@ class State(object):
             self.historyList['A'] = [(block.number, self.account['A'])]
 
         logging.info("Block (#%s) applied to state. %d transactions applied" % (block.hash, len(block.transactions)))
-        accountInvolved = set()
 
         for tnx in block.transactions:
-            accountInvolved.add(tnx.sender)
-            accountInvolved.add(tnx.recipient)
             self.account[tnx.sender] -= tnx.amount
             if not tnx.recipient in self.account:
                 self.account[tnx.recipient] = 0
             self.account[tnx.recipient] += tnx.amount
 
-        for account in accountInvolved:
-            if account not in self.historyList:
-                self.historyList[account] = []
-            self.historyList[account].append((block.number, self.account[account]))
+            if tnx.sender not in self.historyList:
+                self.historyList[tnx.sender] = []
+            if tnx.recipient not in self.historyList:
+                self.historyList[tnx.recipient] = [[block.number, 0]]
+
+            last = len(self.historyList[tnx.sender]) - 1
+            if(not (len(self.historyList[tnx.sender]) > 0 and self.historyList[tnx.sender][last][0] == block.number)):
+              self.historyList[tnx.sender].append([block.number, 0])
+              last += 1
+            
+            self.historyList[tnx.sender][last][1] -= tnx.amount
+
+
+
+            last = len(self.historyList[tnx.recipient]) - 1
+            if(not (len(self.historyList[tnx.recipient]) > 0 and self.historyList[tnx.recipient][last][0] == block.number)):
+              self.historyList[tnx.recipient].append([block.number, 0])
+              last += 1
+            
+            self.historyList[tnx.recipient][last][1] += tnx.amount
+
 
     def history(self, account):
         # return a list of (blockNumber, value changes) that this account went through
         list = []  # [[blocknumber, amount],...]
 
         if not account in self.historyList:
-            self.historyList[account] = []
+            return list
 
-        for h in self.historyList[account]:
-            list.append([h[0], h[1]])
+        # for h in self.historyList[account]:
+        #     list.append([h[0], h[1]])
 
-        print(self.historyList)
+        list.extend(self.historyList[account])
+        # print(list)
 
         return list
 
